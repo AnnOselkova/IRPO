@@ -43,6 +43,14 @@ class Category(models.Model):
         return self.category
 
 
+class Sex(models.Model):
+    CHOICES = [
+        ('M', 'masculine'),
+        ('F', 'feminine'),
+    ]
+    sex = models.CharField(max_length=10, choices=CHOICES)
+
+
 class Animal(models.Model):
     date = models.DateField()
     name = models.CharField(max_length=15)
@@ -52,6 +60,7 @@ class Animal(models.Model):
 
     shelter = models.ForeignKey(Shelter, on_delete=models.PROTECT)
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    sex = models.ForeignKey(Sex, on_delete=models.PROTECT)
 
     def __str__(self):
         return f'{self.date}, {self.name}, {self.breed}, {self.info}'
