@@ -5,8 +5,10 @@ from datetime import datetime
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractBaseUser
 
 
+#  модель рейтинга
 class Rate(models.Model):
     rate = models.IntegerField()
 
@@ -20,18 +22,21 @@ class Rate(models.Model):
         self.save()
 
 
-class Shelter(models.Model):
-    name = models.CharField(max_length=50)
+#  модель приюта
+class Shelter(AbstractBaseUser):
+    email = models.EmailField(max_length=70, unique=True)
+    name = models.CharField(max_length=50, blank=True, unique=True)
     city = models.CharField(max_length=50)
     year_of_foundation = models.DateField()
-    mail = models.EmailField(max_length=70, blank=True, unique=True)
-    phone = models.CharField(max_length=11)
-    address = models.CharField(max_length=50)
-    link = models.URLField()
+    phone = models.CharField(max_length=11, blank=True, unique=True)
+    address = models.CharField(max_length=50, blank=True, unique=True)
+    link = models.URLField(blank=True, unique=True)
+    is_active = models.BooleanField(default=False)
 
-    user = models.OneToOneField(User, on_delete=models.PROTECT)
+    USERNAME_FIELD = 'email'
 
 
+#  модель категории
 class Category(models.Model):
     CHOICES = [
         ('cat', 'cats'),
@@ -43,6 +48,7 @@ class Category(models.Model):
         return self.category
 
 
+#  модель пола
 class Sex(models.Model):
     CHOICES = [
         ('M', 'masculine'),
@@ -51,6 +57,7 @@ class Sex(models.Model):
     sex = models.CharField(max_length=10, choices=CHOICES)
 
 
+#  модель питомца
 class Animal(models.Model):
     date = models.DateField()
     name = models.CharField(max_length=15)

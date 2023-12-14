@@ -4,3 +4,4 @@ django_cache
 __pycache__
 .env
 db.sqlite3
+animals
