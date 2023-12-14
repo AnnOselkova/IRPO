@@ -1,0 +1,15 @@
+{% block content %}
+    <hr>
+    {% if animals %}
+        <table>
+            <tr>
+                <td>Header</td>
+                <td>Text</td>
+            </tr>
+            {% for animal in animals %}
+                <tr>
+                    <td>{{ animal.name}}</td>
+                </tr>
+            {% endfor %}
+    {% endif %}
+{% endblock content %}

@@ -1,16 +1,17 @@
-from django.contrib.auth import login, authenticate
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.contrib.auth import login, logout
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView, TemplateView
+from django.contrib.auth.mixins import PermissionRequiredMixin
+
 from .models import Animal, Shelter
-from .forms import AnimalCreateForm, ShelterLoginForm
+from .forms import AnimalCreateForm, ShelterCreateForm, RegistrationForm
 
 
 #  список питомцев
 class AnimalList(ListView):
     model = Animal
-    template_name = ''
+    template_name = 'animal_list.html'
     context_object_name = 'animals'
     paginate_by = 15
 
@@ -23,7 +24,8 @@ class AnimalDetail(DetailView):
 
 
 #  создание питомца
-class AnimalCreate(CreateView):
+class AnimalCreate(PermissionRequiredMixin, CreateView):
+    permission_required = 'app.add_animal'
     model = Animal
     form_class = AnimalCreateForm
     template_name = 'animal_create.html'
@@ -31,22 +33,17 @@ class AnimalCreate(CreateView):
 
     def form_valid(self, form):
         animal = form.save(commit=False)
-        print(111111111111, self.request.user)
-        animal.shelter = self.request.shelter
+        animal.shelter = Shelter.objects.get(user=self.request.user)
         return super().form_valid(form)
 
 
 #  удаление питомца
-class AnimalDelete(DeleteView):
+class AnimalDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = 'app.add_animal'
     model = Animal
     template_name = ''
     context_object_name = 'animal'
     success_url = reverse_lazy('')
-
-
-#  представление кабинета пользователя
-class UserCabinet(TemplateView):
-    template_name = ''
 
 
 #  представление кабинета приюта
@@ -54,37 +51,52 @@ class ShelterCabinet(TemplateView):
     template_name = ''
 
 
+#  создание приюта
+class ShelterCreate(PermissionRequiredMixin, CreateView):
+    permission_required = 'app.add_shelter'
+    model = Shelter
+    form_class = ShelterCreateForm
+    template_name = 'shelter_create.html'
+    success_url = reverse_lazy('animal_create')
+
+    def form_valid(self, form):
+        shelter = form.save(commit=False)
+        shelter.user = self.request.user
+        return super().form_valid(form)
+
+
+# список питомцев приюта
 class ShelterAnimalList(ListView):
     model = Animal
-    template_name = ''
+    template_name = 'shelter_animals_list.html'
     context_object_name = 'animals'
     paginate_by = 15
 
-    # def get_queryset(self):
-    #     queryset = super().get_queryset()
-    #     # ToDo: check request.shelter
-    #     return queryset.filter(shelter=self.request.shelter)
+    # ToDo: check
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        shelter = Shelter.objects.get(user=self.request.user)
+        return queryset.filter(shelter=shelter)
 
 
-def shelter_login(request):
-    if request.method == 'POST':
-        form = ShelterLoginForm(data=request.POST)
+#  представление кабинета пользователя
+class UserCabinet(TemplateView):
+    template_name = ''
+
+
+# регистрация для простых пользователей
+def sign_in(request):
+    if request.method == "POST":
+        form = RegistrationForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password')
-            try:
-                shelter = authenticate(Shelter.objects.get(email=email, password=password))
-            except:
-                shelter = authenticate(email=email, password=password)
-            if shelter is not None:
-                login(request, shelter)
-                return HttpResponse('Error1111111')
-            else:
-                return HttpResponse('Error2222222')
-        else:
-            return HttpResponse('Error3333333')
-    form = ShelterLoginForm()
-    return render(request, 'shelter_login.html', {'form': form})
+            user = form.save()
+            return redirect('animal_list')
+
+    else:
+        form = RegistrationForm()
+    return render(request, 'user_registration.html', context={'form': form})
+
+
 
 
 

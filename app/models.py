@@ -23,17 +23,16 @@ class Rate(models.Model):
 
 
 #  модель приюта
-class Shelter(AbstractBaseUser):
-    email = models.EmailField(max_length=70, unique=True)
+class Shelter(models.Model):
     name = models.CharField(max_length=50, blank=True, unique=True)
     city = models.CharField(max_length=50)
     year_of_foundation = models.DateField()
-    phone = models.CharField(max_length=11, blank=True, unique=True)
+    phone = models.CharField(max_length=11, blank=True, unique=True, null=True)
     address = models.CharField(max_length=50, blank=True, unique=True)
-    link = models.URLField(blank=True, unique=True)
+    link = models.URLField(blank=True, unique=True, null=True)
     is_active = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'email'
+    user = models.OneToOneField(User, on_delete=models.PROTECT)
 
 
 #  модель категории

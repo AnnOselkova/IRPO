@@ -46,7 +46,8 @@ INSTALLED_APPS = [
 ]
 
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/cabinet/'
+LOGIN_REDIRECT_URL = '/shelter-animals/'
+SIGNUP_REDIRECT_URL = '/shelter-create/'
 
 
 SITE_ID = 1
@@ -159,3 +160,5 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+ACCOUNT_FORMS = {'signup': 'app.forms.BasicSignupForm'}
