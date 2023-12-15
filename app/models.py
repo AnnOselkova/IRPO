@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractBaseUser
 
 
-#  модель рейтинга
+# модель рейтинга
 class Rate(models.Model):
     rate = models.IntegerField()
 
@@ -22,7 +22,7 @@ class Rate(models.Model):
         self.save()
 
 
-#  модель приюта
+# модель приюта
 class Shelter(models.Model):
     name = models.CharField(max_length=50, blank=True, unique=True)
     city = models.CharField(max_length=50)
@@ -35,7 +35,7 @@ class Shelter(models.Model):
     user = models.OneToOneField(User, on_delete=models.PROTECT)
 
 
-#  модель категории
+# модель категории
 class Category(models.Model):
     CHOICES = [
         ('cat', 'cats'),
@@ -47,7 +47,7 @@ class Category(models.Model):
         return self.category
 
 
-#  модель пола
+# модель пола
 class Sex(models.Model):
     CHOICES = [
         ('M', 'masculine'),
@@ -56,7 +56,7 @@ class Sex(models.Model):
     sex = models.CharField(max_length=10, choices=CHOICES)
 
 
-#  модель питомца
+# модель питомца
 class Animal(models.Model):
     date = models.DateField()
     name = models.CharField(max_length=15)
@@ -71,5 +71,6 @@ class Animal(models.Model):
     def __str__(self):
         return f'{self.date}, {self.name}, {self.breed}, {self.info}'
 
+    # возраст питомца
     def age(self):
         return datetime.date(datetime.today()) - self.date

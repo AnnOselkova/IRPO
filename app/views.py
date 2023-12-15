@@ -1,4 +1,4 @@
-from django.contrib.auth import login, logout
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView, TemplateView
@@ -8,7 +8,7 @@ from .models import Animal, Shelter
 from .forms import AnimalCreateForm, ShelterCreateForm, RegistrationForm
 
 
-#  список питомцев
+# список питомцев
 class AnimalList(ListView):
     model = Animal
     template_name = 'animal_list.html'
@@ -16,14 +16,14 @@ class AnimalList(ListView):
     paginate_by = 15
 
 
-#  представление одного питомца
+# представление одного питомца
 class AnimalDetail(DetailView):
     model = Animal
     template_name = ''
     context_object_name = 'animal'
 
 
-#  создание питомца
+# создание питомца
 class AnimalCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'app.add_animal'
     model = Animal
@@ -37,21 +37,44 @@ class AnimalCreate(PermissionRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-#  удаление питомца
-class AnimalDelete(PermissionRequiredMixin, DeleteView):
-    permission_required = 'app.add_animal'
+# создание питомца
+class AnimalUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = 'app.update_animal'
     model = Animal
-    template_name = ''
-    context_object_name = 'animal'
+    form_class = AnimalCreateForm
+    template_name = 'animal_create.html'
     success_url = reverse_lazy('')
 
+    def form_valid(self, form):
+        animal = form.save(commit=False)
+        animal.shelter = Shelter.objects.get(user=self.request.user)
+        return super().form_valid(form)
 
-#  представление кабинета приюта
+
+# удаление питомца
+class AnimalDelete(DeleteView):
+    # permission_required = 'app.add_animal'
+    model = Animal
+    template_name = 'animal_delete.html'
+    context_object_name = 'animal'
+    success_url = reverse_lazy('animal_list')
+
+    # проверка юзера
+    def get(self, *args, **kwargs):
+        user = self.request.user
+        animal = Animal.objects.get(pk=kwargs['pk'])
+        if animal.shelter.user != user:
+            return redirect('animal_list')
+        resp = super().get(*args, **kwargs)
+        return resp
+
+
+# представление кабинета приюта
 class ShelterCabinet(TemplateView):
     template_name = ''
 
 
-#  создание приюта
+# создание приюта
 class ShelterCreate(PermissionRequiredMixin, CreateView):
     permission_required = 'app.add_shelter'
     model = Shelter
@@ -66,7 +89,8 @@ class ShelterCreate(PermissionRequiredMixin, CreateView):
 
 
 # список питомцев приюта
-class ShelterAnimalList(ListView):
+class ShelterAnimalList(PermissionRequiredMixin, ListView):
+    permission_required = 'app.add_shelter'
     model = Animal
     template_name = 'shelter_animals_list.html'
     context_object_name = 'animals'
@@ -79,7 +103,7 @@ class ShelterAnimalList(ListView):
         return queryset.filter(shelter=shelter)
 
 
-#  представление кабинета пользователя
+# представление кабинета пользователя
 class UserCabinet(TemplateView):
     template_name = ''
 
@@ -89,7 +113,7 @@ def sign_in(request):
     if request.method == "POST":
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            form.save()
             return redirect('animal_list')
 
     else:

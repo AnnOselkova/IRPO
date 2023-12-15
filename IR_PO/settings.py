@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/shelter-animals/'
+LOGIN_REDIRECT_URL = '/home/'
 SIGNUP_REDIRECT_URL = '/shelter-create/'
 
 
@@ -93,9 +93,6 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 WSGI_APPLICATION = 'IR_PO.wsgi.application'
-
-
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

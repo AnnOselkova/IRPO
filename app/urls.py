@@ -11,5 +11,5 @@ urlpatterns = [
     path('signin/', sign_in, name='sign_in'),
     path('login/', LoginView.as_view(template_name='login.html'), name='log_in'),
     path('logout/', LogoutView.as_view(template_name='logout.html'), name='log_out'),
-
+    path('delete/<int:pk>', AnimalDelete.as_view(), name='animal_delete'),
 ]

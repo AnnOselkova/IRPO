@@ -6,7 +6,7 @@ from allauth.account.forms import SignupForm
 from django.contrib.auth.models import Group, User
 
 
-#  форма для регистрации пользователя-приюта
+# форма для регистрации пользователя-приюта
 class BasicSignupForm(SignupForm):
 
     def save(self, request):
