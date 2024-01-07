@@ -46,6 +46,7 @@ class ShelterCreateForm(forms.ModelForm):
         ]
 
 
+# создание питомца
 class AnimalCreateForm(forms.ModelForm):
 
     class Meta:

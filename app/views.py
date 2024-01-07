@@ -37,7 +37,7 @@ class AnimalCreate(PermissionRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-# создание питомца
+# изменение питомца
 class AnimalUpdate(PermissionRequiredMixin, UpdateView):
     permission_required = 'app.update_animal'
     model = Animal

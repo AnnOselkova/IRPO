@@ -1,0 +1,14 @@
+{% block title %}
+Удаление отклика
+{% endblock title %}
+
+
+{% block content %}
+   <form method="post">
+       {% csrf_token %}
+       <p>
+           Точно ли вы хотите удалить: {{animal.name}}?
+       </p>
+       <input type="submit" value="Да">
+   </form>
+{% endblock content %}
