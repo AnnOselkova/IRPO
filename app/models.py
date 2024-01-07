@@ -34,6 +34,9 @@ class Shelter(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return f'{self.name}, {self.is_active}, {self.user.username}'
+
 
 # модель категории
 class Category(models.Model):
@@ -54,6 +57,9 @@ class Sex(models.Model):
         ('F', 'feminine'),
     ]
     sex = models.CharField(max_length=10, choices=CHOICES)
+
+    def __str__(self):
+        return self.sex
 
 
 # модель питомца
