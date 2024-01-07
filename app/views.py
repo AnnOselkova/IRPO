@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView, TemplateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
-from .models import Animal, Shelter
+from .models import Animal, Shelter, Category
 from .forms import AnimalCreateForm, ShelterCreateForm, RegistrationForm
 
 
@@ -14,6 +14,21 @@ class AnimalList(ListView):
     template_name = 'animal_list.html'
     context_object_name = 'animals'
     paginate_by = 15
+
+
+# питомцы по определенной категории
+class AnimalOfCategory(ListView):
+    model = Animal
+    template_name = ''
+    context_object_name = 'animals'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.get(pk=self.kwargs['pk'])
+        return context
+
+    def get_queryset(self):
+        return Animal.objects.filter(category=self.kwargs['pk'])
 
 
 # представление одного питомца
@@ -52,8 +67,8 @@ class AnimalUpdate(PermissionRequiredMixin, UpdateView):
 
 
 # удаление питомца
-class AnimalDelete(DeleteView):
-    # permission_required = 'app.add_animal'
+class AnimalDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = 'app.add_animal'
     model = Animal
     template_name = 'animal_delete.html'
     context_object_name = 'animal'
