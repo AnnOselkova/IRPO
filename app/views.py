@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, UpdateView, DetailView, TemplateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
-from .models import Animal, Shelter, Category
+from .models import Animal, Shelter, Category, Sex
 from .forms import AnimalCreateForm, ShelterCreateForm, RegistrationForm
 
 
@@ -19,7 +19,7 @@ class AnimalList(ListView):
 # питомцы по определенной категории
 class AnimalOfCategory(ListView):
     model = Animal
-    template_name = ''
+    template_name = 'animal_of_category.html'
     context_object_name = 'animals'
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -27,14 +27,26 @@ class AnimalOfCategory(ListView):
         context['category'] = Category.objects.get(pk=self.kwargs['pk'])
         return context
 
+
+# питомцы по полу
+class AnimalOfSex(ListView):
+    model = Animal
+    template_name = 'animal_of_sex.html'
+    context_object_name = 'animals'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sex'] = Sex.objects.get(pk=self.kwargs['pk'])
+        return context
+
     def get_queryset(self):
-        return Animal.objects.filter(category=self.kwargs['pk'])
+        return Animal.objects.filter(sex=self.kwargs['pk'])
 
 
 # представление одного питомца
 class AnimalDetail(DetailView):
     model = Animal
-    template_name = ''
+    template_name = 'animal_detail.html'
     context_object_name = 'animal'
 
 
@@ -86,7 +98,7 @@ class AnimalDelete(PermissionRequiredMixin, DeleteView):
 
 # представление кабинета приюта
 class ShelterCabinet(TemplateView):
-    template_name = ''
+    template_name = 'shelter_cabinet.html'
 
 
 # создание приюта
@@ -120,7 +132,7 @@ class ShelterAnimalList(PermissionRequiredMixin, ListView):
 
 # представление кабинета пользователя
 class UserCabinet(TemplateView):
-    template_name = ''
+    template_name = 'user_cabinet.html'
 
 
 # регистрация для простых пользователей

@@ -4,7 +4,9 @@ from django.contrib.auth.views import LogoutView, LoginView
 
 
 urlpatterns = [
-    path('home/', AnimalList.as_view(), name='animal_list'),
+    path('animals/', AnimalList.as_view(), name='animal_list'),
+    path('category/<int:pk>', AnimalOfCategory.as_view(), name='animal_of_category'),
+    path('sex/<int:pk>', AnimalOfSex.as_view(), name='animal_of_sex'),
     path('create/', AnimalCreate.as_view(), name='animal_create'),
     path('shelter-create/', ShelterCreate.as_view(), name='shelter_create'),
     path('shelter-animals/', ShelterAnimalList.as_view(), name='shelter_animals_list'),
