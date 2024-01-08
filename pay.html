@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="styles/style.css">
+</head>
+<body>
+<header class="header">
+    <div class="container">
+        <div class="logo">
+            <img src="images/logo.png" alt="" class="Logo">
+        </div>
+        <nav class="menu">
+            <ul class="menu-list">
+                <li class="menu-iten">
+                    <a href="index.html#main">Главная</a>
+                </li>
+                <li class="menu-iten">
+                    <a href="about.html">О нас </a>
+                </li>
+                <li class="menu-iten">
+                    <a href="index.html#animals">Питомцы</a>
+                </li>
+                <li class="menu-iten">
+                    <a href="pay.html">Пожертвовать</a>
+                </li>
+            </ul>
+        </nav>
+        <div class="currency" ><a target="_blank" href="login.html">Войти</a></div>
+    </div>
+</header>
+<section>
+    <div class="main-title-pay" >Пожертвование</div>
+    <img class="img_pay" src="images/dog.png" alt="">
+    <form  method='POST' action='https://demo.open-processing.ru/create/' >
+        <div class="pay">
+            <div class="order-form-inputs">
+                <div class="text_pay">Введите сумму оплаты:</div>
+                <div class="order-form-input">
+                    <input type='text' name='sum' /> <br />
+                </div>
+                <div class="text_pay" >Введите код для пожертвования:</div>
+                <div class="order-form-input">
+                    <input type='text' name='orderid' /> <br />
+                </div>
+                <div class="text_pay" >Введите название услуги:</div>
+                <div class="order-form-input">
+                    <input type='text' name='service_name' /> <br />
+                </div>
+            </div>
+        </div>
+
+        <input class="pay_bt" type='submit' value='Перейти к оплате' />
+    </form>
+</section>
+
+</body>
+</html>
